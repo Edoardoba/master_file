@@ -44,9 +44,12 @@ with form:
     
 if submitted:
     if uploaded_file is not None:
-        # Can be used wherever a "file-like" object is accepted:
-        dataframe = pd.read_excel(uploaded_file.name)
-        st.table(dataframe.head(3))
-    
-        df_xlsx = to_excel(dataframe)
-        st.download_button("📥 Download Master File", df_xlsx, file_name = 'master_file.xlsx')
+        try:
+            dataframe = pd.read_excel(uploaded_file)
+            st.table(dataframe)
+
+
+            df_xlsx = to_excel(dataframe)
+            st.download_button("📥 Download Master File", df_xlsx, file_name = 'master_file.xlsx')
+        except:
+            st.write("Excel file not valid, please upload another one")
