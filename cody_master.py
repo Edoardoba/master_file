@@ -2,32 +2,51 @@ import streamlit as st
 import pandas as pd
 import numpy as np
 import datetime
+from io import BytesIO
+from pyxlsb import open_workbook as open_xlsb
+
+def to_excel(df):
+    output = BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    df.to_excel(writer, index=False, sheet_name='Sheet1')
+    workbook = writer.book
+    worksheet = writer.sheets['Sheet1']
+    format1 = workbook.add_format({'num_format': '0.00'}) 
+    worksheet.set_column('A:A', None, format1)  
+    writer.save()
+    processed_data = output.getvalue()
+    return processed_data
+
 
 
 st.title('Master File Tool')
 
-st.write("CIAOOOOOOOO")
-
-uploaded_file = st.file_uploader("Choose a file")
-if uploaded_file is not None:
-    # Can be used wherever a "file-like" object is accepted:
-    dataframe = pd.read_excel(uploaded_file.name)
-    st.table(dataframe.head(3))
-    
 
     
+form = st.form(key="annotation")    
+with form:
+    uploaded_file = st.file_uploader("Choose a file")
+    cols = st.columns((1, 1))
     
+    starting_date = cols[0].date_input(
+         "Initial Date",
+         datetime.date(2019, 7, 6))
+    ending_date = cols[1].date_input(
+         "End Date",
+         datetime.date(2019, 7, 9))
+
+    bug_type = cols[0].selectbox(
+        "Add All Sheets:", ["True", "False"], index=1
+    )
     
+    submitted = st.form_submit_button(label="Submit")  
+
     
-
-starting_date = st.date_input(
-     "Initial Data",
-     datetime.date(2019, 7, 6))
-end_date = st.date_input(
-     "End Date",
-     datetime.date(2019, 7, 6))
-st.write(starting_date, end_date)
-
-
-
-# st.download_button("AA", dataframe.to_csv("test.csv"))
+if submitted:
+    if uploaded_file is not None:
+        # Can be used wherever a "file-like" object is accepted:
+        dataframe = pd.read_excel(uploaded_file.name)
+        st.table(dataframe.head(3))
+    
+        df_xlsx = to_excel(dataframe)
+        st.download_button("📥 Download Master File", df_xlsx, file_name = 'master_file.xlsx')
