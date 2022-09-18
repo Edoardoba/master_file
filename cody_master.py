@@ -25,7 +25,7 @@ st.title('Master File Tool')
     
 form = st.form(key="annotation")    
 with form:
-    uploaded_file = st.file_uploader("Choose a file")
+    uploaded_file = st.file_uploader("Please upload the Info File")
     cols = st.columns((1, 1))
     
     starting_date = cols[0].date_input(
