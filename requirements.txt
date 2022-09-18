@@ -2,3 +2,4 @@ streamlit
 datetime
 pandas 
 numpy
+pyxlsb
