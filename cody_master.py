@@ -4,6 +4,9 @@ import numpy as np
 import datetime
 from io import BytesIO
 from pyxlsb import open_workbook as open_xlsb
+from pydrive.auth import GoogleAuth
+from pydrive.drive import GoogleDrive
+
 
 def to_excel(df):
     output = BytesIO()
@@ -22,7 +25,10 @@ def to_excel(df):
 st.title('Master File Tool')
 
 
-    
+gauth = GoogleAuth()
+gauth.LocalWebserverAuth() # client_secrets.json need to be in the same directory as the script
+drive = GoogleDrive(gauth)    
+
 form = st.form(key="annotation")    
 with form:
     uploaded_file = st.file_uploader("Please upload the Info File")
