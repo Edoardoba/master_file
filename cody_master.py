@@ -6,6 +6,7 @@ from io import BytesIO
 from pyxlsb import open_workbook as open_xlsb
 from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
+from googleapiclient.discovery import build
 
 
 def to_excel(df):
