@@ -25,37 +25,48 @@ def to_excel(df):
 st.title('Master File Tool')
 
 
-gauth = GoogleAuth()
-gauth.LocalWebserverAuth() # client_secrets.json need to be in the same directory as the script
-drive = GoogleDrive(gauth)    
+import streamlit as st
+from google.oauth2 import service_account
+from google.cloud import storage
 
-form = st.form(key="annotation")    
-with form:
-    uploaded_file = st.file_uploader("Please upload the Info File")
-    cols = st.columns((1, 1))
+# Create API client.
+credentials = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"]
+)
+client = storage.Client(credentials=credentials)
+
+
+# gauth = GoogleAuth()
+# gauth.LocalWebserverAuth() # client_secrets.json need to be in the same directory as the script
+# drive = GoogleDrive(gauth)    
+
+# form = st.form(key="annotation")    
+# with form:
+#     uploaded_file = st.file_uploader("Please upload the Info File")
+#     cols = st.columns((1, 1))
     
-    starting_date = cols[0].date_input(
-         "Initial Date",
-         datetime.date(2019, 7, 6))
-    ending_date = cols[1].date_input(
-         "End Date",
-         datetime.date(2019, 7, 9))
+#     starting_date = cols[0].date_input(
+#          "Initial Date",
+#          datetime.date(2019, 7, 6))
+#     ending_date = cols[1].date_input(
+#          "End Date",
+#          datetime.date(2019, 7, 9))
 
-    bug_type = cols[0].selectbox(
-        "Add All Sheets:", ["True", "False"], index=1
-    )
+#     bug_type = cols[0].selectbox(
+#         "Add All Sheets:", ["True", "False"], index=1
+#     )
     
-    submitted = st.form_submit_button(label="Submit")  
+#     submitted = st.form_submit_button(label="Submit")  
 
     
-if submitted:
-    if uploaded_file is not None:
-#         try:
-        dataframe = pd.read_excel(uploaded_file)
-        st.table(dataframe)
+# if submitted:
+#     if uploaded_file is not None:
+# #         try:
+#         dataframe = pd.read_excel(uploaded_file)
+#         st.table(dataframe)
 
 
-        df_xlsx = to_excel(dataframe)
-        st.download_button("📥 Download Master File", df_xlsx, file_name = 'master_file.xlsx')
+#         df_xlsx = to_excel(dataframe)
+#         st.download_button("📥 Download Master File", df_xlsx, file_name = 'master_file.xlsx')
 #         except:
 #             st.write("Excel file not valid, please upload another one")
