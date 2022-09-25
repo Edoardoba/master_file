@@ -6,3 +6,4 @@ pyxlsb
 openpyxl
 xlsxwriter
 pydrive
+google-cloud-storage
