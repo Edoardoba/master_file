@@ -36,7 +36,7 @@ credentials = service_account.Credentials.from_service_account_info(
 )
 # client = storage.Client(credentials=credentials)
 
-drive = GoogleDrive(credentials)
+drive = GoogleDrive()
 drive_service = build('drive', 'v3', credentials=credentials)
 
 drive.ListFile({ "q":"title='" + "OA Hunt Gold".replace("'","\\'").replace("\"","\\'") + "'", "includeItemsFromAllDrives":"True", "supportsAllDrives":"True", "corpora":"allDrives"}).GetList()
