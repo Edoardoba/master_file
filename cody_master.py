@@ -35,6 +35,7 @@ credentials = service_account.Credentials.from_service_account_info(
 )
 client = storage.Client(credentials=credentials)
 
+st.write("AA")
 
 # gauth = GoogleAuth()
 # gauth.LocalWebserverAuth() # client_secrets.json need to be in the same directory as the script
