@@ -39,19 +39,22 @@ credentials = service_account.Credentials.from_service_account_info(
 drive = GoogleDrive(credentials)
 drive_service = build('drive', 'v3', credentials=credentials)
 
-for file_name in "OA Hunt Gold":
-    file = drive.ListFile({ "q":"title='" + file_name.replace("'","\\'").replace("\"","\\'") + "'", "includeItemsFromAllDrives":"True", "supportsAllDrives":"True", "corpora":"allDrives"}).GetList()
-    if len(file) != 0:
-      try:
-        request = drive_service.files().export_media(fileId=file[0]['id'], mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-        download_data(request, file[0], ".xlsx")
-        print("File " + file_name + " downloaded!")
-      except:  
-        request = drive_service.files().get_media(fileId=file['id'])
-        download_data(request, file[0], "")
-        print("File " + file_name + " downloaded!")
-    else:
-      print("File " + file_name + " not found!")
+drive.ListFile({ "q":"title='" + "OA Hunt Gold".replace("'","\\'").replace("\"","\\'") + "'", "includeItemsFromAllDrives":"True", "supportsAllDrives":"True", "corpora":"allDrives"}).GetList()
+
+
+# for file_name in "OA Hunt Gold":
+#     file = drive.ListFile({ "q":"title='" + file_name.replace("'","\\'").replace("\"","\\'") + "'", "includeItemsFromAllDrives":"True", "supportsAllDrives":"True", "corpora":"allDrives"}).GetList()
+#     if len(file) != 0:
+#       try:
+#         request = drive_service.files().export_media(fileId=file[0]['id'], mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+#         download_data(request, file[0], ".xlsx")
+#         print("File " + file_name + " downloaded!")
+#       except:  
+#         request = drive_service.files().get_media(fileId=file['id'])
+#         download_data(request, file[0], "")
+#         print("File " + file_name + " downloaded!")
+#     else:
+#       print("File " + file_name + " not found!")
 
 
 st.write("AA")
