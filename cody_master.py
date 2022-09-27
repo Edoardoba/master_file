@@ -8,6 +8,7 @@ from pydrive.auth import GoogleAuth
 from pydrive.drive import GoogleDrive
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
+from google.oauth2 import *
 
 
 def to_excel(df):
