@@ -7,3 +7,4 @@ openpyxl
 xlsxwriter
 pydrive
 google-cloud-storage
+google_auth_oauthlib
