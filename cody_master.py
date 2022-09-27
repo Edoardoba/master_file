@@ -26,20 +26,56 @@ def to_excel(df):
 st.title('Master File Tool')
 
 
-import streamlit as st
-from google.oauth2 import service_account
-from google.cloud import storage
+SCOPES = ['https://www.googleapis.com/auth/drive']
 
-# Create API client.
-credentials = service_account.Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"]
-)
-# client = storage.Client(credentials=credentials)
+creds = None
 
-drive = GoogleDrive()
-drive_service = build('drive', 'v3', credentials=credentials)
 
-drive.ListFile({ "q":"title='" + "OA Hunt Gold".replace("'","\\'").replace("\"","\\'") + "'", "includeItemsFromAllDrives":"True", "supportsAllDrives":"True", "corpora":"allDrives"}).GetList()
+# request the user to log in.
+if not creds or not creds.valid:
+
+    # If token is expired, it will be refreshed,
+    # else, we will request a new one.
+    if creds and self.creds.expired and creds.refresh_token:
+        creds.refresh(Request())
+    else:
+        flow = InstalledAppFlow.from_client_secrets_file(
+            'credentials.json', SCOPES)
+        creds = flow.run_local_server(port=0)
+
+
+
+# Connect to the API service
+service = build('drive', 'v3', credentials=creds)
+
+# request a list of first N files or
+# folders with name and id from the API.
+results = service.files().list(
+    pageSize=100, fields="files(id, name)").execute()
+items = results.get('files', [])
+
+# print a list of files
+
+print("Here's a list of files: \n")
+print(*items, sep="\n", end="\n\n")
+
+
+
+
+# import streamlit as st
+# from google.oauth2 import service_account
+# from google.cloud import storage
+
+# # Create API client.
+# credentials = service_account.Credentials.from_service_account_info(
+#     st.secrets["gcp_service_account"]
+# )
+# # client = storage.Client(credentials=credentials)
+
+# drive = GoogleDrive()
+# drive_service = build('drive', 'v3', credentials=credentials)
+
+# drive.ListFile({ "q":"title='" + "OA Hunt Gold".replace("'","\\'").replace("\"","\\'") + "'", "includeItemsFromAllDrives":"True", "supportsAllDrives":"True", "corpora":"allDrives"}).GetList()
 
 
 # for file_name in "OA Hunt Gold":
