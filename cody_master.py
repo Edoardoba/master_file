@@ -1,17 +1,18 @@
+
+from __future__ import print_function
 import streamlit as st
-import pandas as pd
-import numpy as np
-import datetime
-from io import BytesIO
-# from pyxlsb import open_workbook as open_xlsb
-from pydrive.auth import GoogleAuth
-from pydrive.drive import GoogleDrive
+import pickle
+import os.path
+import io
+import shutil
+import requests
+from mimetypes import MimeTypes
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
-from google.oauth2 import *
-import os
-import pickle
 from google.auth.transport.requests import Request
+from googleapiclient.http import MediaIoBaseDownload, MediaFileUpload
+import http.client as http_client
+http_client.HTTPConnection.debuglevel = 1
 
 class DriveAPI:
     global SCOPES
