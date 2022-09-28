@@ -16,11 +16,6 @@ http_client.HTTPConnection.debuglevel = 1
 from google.oauth2 import service_account
 
 class DriveAPI:
-    global SCOPES
-
-    # Define the scopes
-    SCOPES = ['https://www.googleapis.com/auth/drive']
-
     def __init__(self):
 
         # Variable self.creds will
