@@ -44,15 +44,11 @@ class DriveAPI:
         # If no valid credentials are available,
         # request the user to log in.
         if not self.creds or not self.creds.valid:
+    
+            credentials = service_account.Credentials.from_service_account_info(
+                st.secrets["gcp_service_account"]
+            )
 
-            # If token is expired, it will be refreshed,
-            # else, we will request a new one.
-            if self.creds and self.creds.expired and self.creds.refresh_token:
-                self.creds.refresh(Request())
-            else:
-                flow = InstalledAppFlow.from_client_secrets_file(
-                    'credentials.json', SCOPES)
-                self.creds = flow.run_local_server(port=0)
 
             # Save the access token in token.pickle
             # file for future usage
