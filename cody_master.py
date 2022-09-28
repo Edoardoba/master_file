@@ -13,6 +13,7 @@ from google.auth.transport.requests import Request
 from googleapiclient.http import MediaIoBaseDownload, MediaFileUpload
 import http.client as http_client
 http_client.HTTPConnection.debuglevel = 1
+from google.oauth2 import service_account
 
 class DriveAPI:
     global SCOPES
