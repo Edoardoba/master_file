@@ -55,7 +55,7 @@ class DriveAPI:
             # file for future usage
             with open('token.pickle', 'wb') as token:
                 pickle.dump(self.creds, token)
-
+        print(self.creds)
         # Connect to the API service
         self.service = build('drive', 'v3', credentials=self.creds)
 
