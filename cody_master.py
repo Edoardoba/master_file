@@ -73,45 +73,53 @@ service = build('drive', 'v3', credentials=login())
 # # request a list of first N files or
 # # folders with name and id from the API.
 
-for file_name in ["OA Hunt Gold"]:
-    file = service.files().list( q =  "name = 'OA Hunt Gold'", includeItemsFromAllDrives=True, supportsAllDrives=True).execute()
-    if len(file) != 0:
-        try:
-            request = service.files().export_media(fileId=file["files"][0]['id'], mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            download_data(request, file, ".xlsx")
-        except:  
-            request = service.files().get_media(fileId=file["files"][0]['id'])
-            download_data(request, file, "")
-    else:
-        print("File " + file_name + " not found!")
 
-# form = st.form(key="annotation")    
-# with form:
-#     uploaded_file = st.file_uploader("Please upload the Info File")
-#     cols = st.columns((1, 1))
+form = st.form(key="annotation")    
+with form:
+    uploaded_file = st.file_uploader("Please upload the Info File")
+    cols = st.columns((1, 1))
     
-#     starting_date = cols[0].date_input(
-#          "Initial Date",
-#          datetime.date(2019, 7, 6))
-#     ending_date = cols[1].date_input(
-#          "End Date",
-#          datetime.date(2019, 7, 9))
+    starting_date = cols[0].date_input(
+         "Initial Date",
+         datetime.date(2022, 7, 6))
+    ending_date = cols[1].date_input(
+         "End Date",
+         datetime.date(2019, 7, 9))
 
-#     bug_type = cols[0].selectbox(
-#         "Add All Sheets:", ["True", "False"], index=1
-#     )
+    bug_type = cols[0].selectbox(
+        "Add All Sheets:", ["True", "False"], index=1
+    )
     
-#     submitted = st.form_submit_button(label="Submit")  
+    submitted = st.form_submit_button(label="Submit")  
 
     
-# if submitted:
-#     if uploaded_file is not None:
-# #         try:
-#         dataframe = pd.read_excel(uploaded_file)
-#         st.table(dataframe)
+if submitted:
+    if uploaded_file is not None:
+#         try:
+        dataframe = pd.read_excel(uploaded_file)
+        st.table(dataframe)
+
+        for col in info_master.columns.to_list():
+          if "Unnamed" in col:
+            del info_master[col]
+
+        sheet_names = info_master["Sheet Name"].unique()
+        sheet_names_short = [x.lstrip().rstrip() for x in sheet_names if str(x)!="nan"]
+        
+        for file_name in sheet_names:
+            file = service.files().list( q =  "name = '" + file_name + "'", includeItemsFromAllDrives=True, supportsAllDrives=True).execute()
+            if len(file) != 0:
+                try:
+                    request = service.files().export_media(fileId=file["files"][0]['id'], mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+                    download_data(request, file, ".xlsx")
+                except:  
+                    request = service.files().get_media(fileId=file["files"][0]['id'])
+                    download_data(request, file, "")
+            else:
+                print("File " + file_name + " not found!")
 
 
-#         df_xlsx = to_excel(dataframe)
-#         st.download_button("📥 Download Master File", df_xlsx, file_name = 'master_file.xlsx')
-#         except:
-#             st.write("Excel file not valid, please upload another one")
+        df_xlsx = to_excel(dataframe)
+        st.download_button("📥 Download Master File", df_xlsx, file_name = 'master_file.xlsx')
+        except:
+            st.write("Excel file not valid, please upload another one")
