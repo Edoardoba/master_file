@@ -1,9 +1,9 @@
-google-api-core==2.10.1
-google-api-python-client==2.63.0
+google-api-core
+google-api-python-client
 google-auth
 google-auth-httplib2
 google-auth-oauthlib
-httplib2==0.20.4
+httplib2
 oauthlib==
 streamlit
 pyxlsb
