@@ -7,6 +7,6 @@ httplib2
 oauthlib
 streamlit
 pyxlsb
-pandas
+pandas==1.5.0
 openpyxl
 xlsxwriter
