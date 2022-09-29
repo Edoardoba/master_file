@@ -181,7 +181,18 @@ if submitted:
         add_all_sheets = False
         days_to_be_considered = ""
         
-        
+        if days_to_be_considered != "" and add_all_sheets == False:
+          initial_date = datetime.strptime(days_to_be_considered.split("-")[0], '%Y/%m/%d')
+          final_date = datetime.strptime(days_to_be_considered.split("-")[1], '%Y/%m/%d')
+          dates_list = []
+          diff = final_date - initial_date
+          for date in range(diff.days + 1):
+              dates_list.append((initial_date + timedelta(date)).strftime('%Y/%m/%d'))
+        else:
+          day = datetime.today()
+
+
+
         for element in os.listdir("data/"):
           if element.endswith('.xlsx'):
             
