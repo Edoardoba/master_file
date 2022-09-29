@@ -141,7 +141,6 @@ with form:
     
     starting_date = cols[0].date_input(
          "Initial Date",
-#          datetime.date(2022, 7, 6))
         datetime.datetime.today()) 
     ending_date = cols[1].date_input(
          "End Date",
@@ -186,6 +185,11 @@ if submitted:
         add_all_sheets = bug_type
         days_to_be_considered = ""
         
+        if starting_date == datetime.datetime.today():
+            days_to_be_considered = ""
+        else:
+            days_to_be_considered = str(starting_date) + "-" + str(ending_date) 
+            
         if days_to_be_considered != "" and add_all_sheets == str(False):
           initial_date = datetime.strptime(days_to_be_considered.split("-")[0], '%Y/%m/%d')
           final_date = datetime.strptime(days_to_be_considered.split("-")[1], '%Y/%m/%d')
