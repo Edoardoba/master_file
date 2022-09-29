@@ -91,7 +91,7 @@ def post_processing(master_file):
 
 
 
-def get_sheet_name(element):
+def get_sheet_name(info_master, element):
   format = info_master[info_master["Sheet Name"]==element].reset_index(drop=True)["Sheet Format"].item()
   if format == "-": return ["None"]
   elif format == "MM.DD": return ([day.strftime('%-m.%d'), day.strftime('%m.%d'), day.strftime('%-m.%-d'), day.strftime('%m.%-d')])
