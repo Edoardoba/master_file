@@ -98,7 +98,7 @@ if submitted:
 
         for element in os.listdir("data/"):
           if element.endswith('.xlsx'):
-              sheet = get_sheet_name(element.replace(".xlsx", ""))
+              sheet = get_sheet_name(info_master, element.replace(".xlsx", ""))
               data, sheetname = read_data(path + element, sheet)
               master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day.strftime('%d/%m/%Y')).reset_index(drop = True)
               print("Done " + element)
