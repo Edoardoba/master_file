@@ -81,7 +81,8 @@ with form:
     
     starting_date = cols[0].date_input(
          "Initial Date",
-         datetime.date(2022, 7, 6))
+#          datetime.date(2022, 7, 6))
+        datetime.today()) 
     ending_date = cols[1].date_input(
          "End Date",
          datetime.date(2019, 7, 9))
@@ -96,8 +97,8 @@ with form:
 if submitted:
     if uploaded_file is not None:
 #         try:
-        dataframe = pd.read_excel(uploaded_file)
-        st.table(dataframe.head(5))
+        info_master = pd.read_excel(uploaded_file)
+        st.table(info_master.head(3))
 
         for col in info_master.columns.to_list():
           if "Unnamed" in col:
