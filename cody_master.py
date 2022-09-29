@@ -119,7 +119,7 @@ if submitted:
                 print("File " + file_name + " not found!")
 
 
-        df_xlsx = to_excel(dataframe)
-        st.download_button("📥 Download Master File", df_xlsx, file_name = 'master_file.xlsx')
-        except:
-            st.write("Excel file not valid, please upload another one")
+#         df_xlsx = to_excel(dataframe)
+#         st.download_button("📥 Download Master File", df_xlsx, file_name = 'master_file.xlsx')
+#         except:
+#             st.write("Excel file not valid, please upload another one")
