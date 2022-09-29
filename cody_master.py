@@ -251,7 +251,7 @@ if submitted:
 #                 pass
 
         master_file = post_processing(master_file)          
-        master_file = to_excel(dataframe)        
+        master_file = to_excel(master_file)        
         st.download_button("📥 Download Master File", master_file, file_name = 'master_file.xlsx')    
 
 #         df_xlsx = to_excel(dataframe)
