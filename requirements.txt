@@ -7,3 +7,4 @@ httplib2
 oauthlib
 streamlit
 pyxlsb
+pandas
