@@ -37,6 +37,60 @@ def to_excel(df):
     return processed_data
 
 
+def build_master_file(master_file, data, filename, sheetname, timestampp):
+  col_names =  ["Sheet Name", "Date"]
+  temp_data  =  pd.DataFrame(np.nan, index = np.arange(len(data)), columns = col_names)
+  temp_data["Sheet Name"], temp_data["Date"] = filename, timestampp
+  columns_list = info_master[info_master["Sheet Name"]==filename].reset_index(drop=True).loc[0].to_list()
+  for column in range(3, len(columns_list)):
+    if columns_list[column] != "-":
+      temp_data[info_master.columns.to_list()[column]] = data[[columns_list[column]]]
+    else:
+      temp_data[info_master.columns.to_list()[column]] = "Not Defined"
+
+  master_file = master_file.append(temp_data)
+  master_file = master_file[master_file.isnull().sum(axis=1) < 7]
+  return master_file
+
+
+def read_data(file, sheet):
+  if sheet[0]!= "None":
+    for format in sheet:
+      try:
+        data = pd.read_excel(str(file), format)
+      except:
+        pass
+  else:
+    data = pd.read_excel(str(file))
+
+  if 'Unnamed: 1' in data.columns.to_list():
+    data = data[data.isnull().sum(axis=1) < 7]
+    new_header = data.iloc[0]
+    data = data[1:]
+    data.columns = new_header 
+    data.columns = data.columns.str.rstrip().str.lstrip()
+    return data.reset_index(drop=True), sheet
+  else:
+    data.columns = data.columns.str.rstrip().str.lstrip()
+    return data.reset_index(drop=True), sheet
+
+
+
+def post_processing(master_file):
+  master_file["Product Category"] = master_file["Product Category"].str.replace("\r","")
+  master_file = master_file[master_file["ASIN"]!="ASIN"].reset_index(drop=True)
+  master_file = master_file.drop_duplicates().reset_index(drop=True)
+  return master_file
+
+
+
+def get_sheet_name(element):
+  format = info_master[info_master["Sheet Name"]==element].reset_index(drop=True)["Sheet Format"].item()
+  if format == "-": return ["None"]
+  elif format == "MM.DD": return ([day.strftime('%-m.%d'), day.strftime('%m.%d'), day.strftime('%-m.%-d'), day.strftime('%m.%-d')])
+  elif format == "MONTH DD, YYYY": return [day.strftime('%B %d, %Y'), day.strftime('%B %-d, %Y')]
+  elif format == "DDMMYYYY": return [day.strftime('%d%m%Y'), day.strftime('%-d%m%Y'), day.strftime('%d%-m%Y'), day.strftime('%-d%-m%Y')]
+
 
 def login():
     creds = None
@@ -120,6 +174,61 @@ if submitted:
             else:
                 print("File " + file_name + " not found!")
 
+                
+                
+         info_master["Sheet Name"] = [str(x).replace("/","-").lstrip().rstrip() for x in info_master["Sheet Name"]]
+
+        add_all_sheets == False
+        days_to_be_considered == ""
+        
+        
+        for element in os.listdir("data/"):
+          if element.endswith('.xlsx'):
+
+            if add_all_sheets == False:
+
+        # Normal scenario, only daily leads
+              if days_to_be_considered == "":
+                try:
+                  sheet = get_sheet_name(element.replace(".xlsx", ""))
+                  data, sheetname = read_data(path + element, sheet)
+                  master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day.strftime('%d/%m/%Y')).reset_index(drop = True)
+                  print("Done " + element)
+                except Exception as e:
+                  print("File " + element + " not processed")
+              else:
+
+        # Retrieve all leads from a Date Range
+                docs_to_ignore = []
+                for selected_date in dates_list:
+                  if element not in docs_to_ignore:
+                    day = datetime.strptime(selected_date, '%Y/%m/%d')
+                    sheet = get_sheet_name(element.replace(".xlsx", ""))
+                    if sheet == ["None"]: docs_to_ignore.append(element)
+                    try:
+                      data, sheetname = read_data(path + element, sheet)
+                      master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day.strftime('%d/%m/%Y')).reset_index(drop = True)           
+                    except:
+                      pass
+                  print("Done " + element + " " + selected_date)
+        # Scan all sheets in the Excel Files
+
+            else:
+              try:
+                for sheet in pd.ExcelFile("data/" + element).sheet_names:
+                  data, sheetname = read_data(path + element, [sheet])
+                  if len(pd.ExcelFile("data/" + element).sheet_names) > 1:
+                    master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, sheet).reset_index(drop = True)
+                  else:
+                    master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day).reset_index(drop = True)
+
+                  print("Done " + element + " " + sheet)
+              except:
+                pass
+
+        master_file = post_processing(master_file)          
+        master_file = to_excel(dataframe)        
+        st.download_button("📥 Download Master File", master_file, file_name = 'master_file.xlsx')    
 
 #         df_xlsx = to_excel(dataframe)
 #         st.download_button("📥 Download Master File", df_xlsx, file_name = 'master_file.xlsx')
