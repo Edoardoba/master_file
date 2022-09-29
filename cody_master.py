@@ -1,130 +1,89 @@
 
-from __future__ import print_function
-import streamlit as st
+import os
 import pickle
-import os.path
-import io
-import shutil
-import requests
-from mimetypes import MimeTypes
+import streamlit as st
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
+import io
+from pyxlsb import open_workbook as open_xlsb
+import shutil
 from googleapiclient.http import MediaIoBaseDownload, MediaFileUpload
-import http.client as http_client
-http_client.HTTPConnection.debuglevel = 1
-from google.oauth2 import service_account
-
-class DriveAPI:
-    def __init__(self):
-
-        # Variable self.creds will
-        # store the user access token.
-        # If no valid token found
-        # we will create one.
-        self.creds = None
-        self.lists={}
-
-        # The file token.pickle stores the
-        # user's access and refresh tokens. It is
-        # created automatically when the authorization
-        # flow completes for the first time.
-
-        # Check if file token.pickle exists
-        if os.path.exists('token.pickle'):
-            # Read the token from the file and
-            # store it in the variable self.creds
-            with open('token.pickle', 'rb') as token:
-                self.creds = pickle.load(token)
-
-        # If no valid credentials are available,
-        # request the user to log in.
-        if not self.creds or not self.creds.valid:
-    
-            credentials = service_account.Credentials.from_service_account_info(
-                st.secrets["gcp_service_account"]
-            )
-
-
-            # Save the access token in token.pickle
-            # file for future usage
-            with open('token.pickle', 'wb') as token:
-                pickle.dump(self.creds, token)
-        print(self.creds)
-        # Connect to the API service
-        self.service = build('drive', 'v3', credentials=self.creds)
-
-        # request a list of first N files or
-        # folders with name and id from the API.
-        results = self.service.files().list(
-            pageSize=100).execute()
-        items = results.get('files', [])
-        self.lists=items
-        # print a list of files
-
-        print("Here's a list of files: \n")
-        print(*items, sep="\n", end="\n\n")
-
-# def to_excel(df):
-#     output = BytesIO()
-#     writer = pd.ExcelWriter(output, engine='xlsxwriter')
-#     df.to_excel(writer, index=False, sheet_name='Sheet1')
-#     workbook = writer.book
-#     worksheet = writer.sheets['Sheet1']
-#     format1 = workbook.add_format({'num_format': '0.00'}) 
-#     worksheet.set_column('A:A', None, format1)  
-#     writer.save()
-#     processed_data = output.getvalue()
-#     return processed_data
 
 
 
-st.title('Master File Tool')
+def download_data(request, file, suffix):
+    fh = io.BytesIO()
+    downloader = MediaIoBaseDownload(fh, request)
+    done = False
+    while done is False:
+        status, done = downloader.next_chunk()
+    # The file has been downloaded into RAM, now save it in a file
+    fh.seek(0)
+    with open('data/' + file["files"][0]["name"].replace("/","-") + suffix , 'wb') as f:
+        shutil.copyfileobj(fh, f, length=131072)
+    print("Downloaded: ", file["files"][0]["name"])     
 
-obj = DriveAPI()
-# required_lists_of_files_with_id=obj.lists
-# st.write(required_lists_of_files_with_id)
-
-
-st.write('OKKK')
-
-
-# import streamlit as st
-# from google.oauth2 import service_account
-# from google.cloud import storage
-
-# # Create API client.
-# credentials = service_account.Credentials.from_service_account_info(
-#     st.secrets["gcp_service_account"]
-# )
-# # client = storage.Client(credentials=credentials)
-
-# drive = GoogleDrive()
-# drive_service = build('drive', 'v3', credentials=credentials)
-
-# drive.ListFile({ "q":"title='" + "OA Hunt Gold".replace("'","\\'").replace("\"","\\'") + "'", "includeItemsFromAllDrives":"True", "supportsAllDrives":"True", "corpora":"allDrives"}).GetList()
-
-
-# for file_name in "OA Hunt Gold":
-#     file = drive.ListFile({ "q":"title='" + file_name.replace("'","\\'").replace("\"","\\'") + "'", "includeItemsFromAllDrives":"True", "supportsAllDrives":"True", "corpora":"allDrives"}).GetList()
-#     if len(file) != 0:
-#       try:
-#         request = drive_service.files().export_media(fileId=file[0]['id'], mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-#         download_data(request, file[0], ".xlsx")
-#         print("File " + file_name + " downloaded!")
-#       except:  
-#         request = drive_service.files().get_media(fileId=file['id'])
-#         download_data(request, file[0], "")
-#         print("File " + file_name + " downloaded!")
-#     else:
-#       print("File " + file_name + " not found!")
+def to_excel(df):
+    output = BytesIO()
+    writer = pd.ExcelWriter(output, engine='xlsxwriter')
+    df.to_excel(writer, index=False, sheet_name='Sheet1')
+    workbook = writer.book
+    worksheet = writer.sheets['Sheet1']
+    format1 = workbook.add_format({'num_format': '0.00'}) 
+    worksheet.set_column('A:A', None, format1)  
+    writer.save()
+    processed_data = output.getvalue()
+    return processed_data
 
 
-st.write("AA")
 
-# gauth = GoogleAuth()
-# gauth.LocalWebserverAuth() # client_secrets.json need to be in the same directory as the script
-# drive = GoogleDrive(gauth)    
+def login():
+    creds = None
+    # The file token.pickle stores the
+    # user's access and refresh tokens. It is
+    # created automatically when the authorization
+    # flow completes for the first time.
+
+    # Check if file token.pickle exists
+    if os.path.exists('token.pickle'):
+        # Read the token from the file and
+        # store it in the variable self.creds
+        with open('token.pickle', 'rb') as token:
+            creds = pickle.load(token)
+
+    # If no valid credentials are available,
+    # request the user to log in.
+    if not creds or not creds.valid:
+
+        # If token is expired, it will be refreshed,
+        # else, we will request a new one.
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+
+        # Save the access token in token.pickle
+        # file for future usage
+        with open('token.pickle', 'wb') as token:
+            pickle.dump(creds, token)
+    return creds
+
+# # Connect to the API service
+service = build('drive', 'v3', credentials=login())
+
+# # request a list of first N files or
+# # folders with name and id from the API.
+
+for file_name in ["OA Hunt Gold"]:
+    file = service.files().list( q =  "name = 'OA Hunt Gold'", includeItemsFromAllDrives=True, supportsAllDrives=True).execute()
+    if len(file) != 0:
+        try:
+            request = service.files().export_media(fileId=file["files"][0]['id'], mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            download_data(request, file, ".xlsx")
+        except:  
+            request = service.files().get_media(fileId=file["files"][0]['id'])
+            download_data(request, file, "")
+    else:
+        print("File " + file_name + " not found!")
 
 # form = st.form(key="annotation")    
 # with form:
