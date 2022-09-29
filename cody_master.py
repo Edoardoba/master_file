@@ -186,7 +186,7 @@ if submitted:
         add_all_sheets = bug_type
         days_to_be_considered = ""
         
-        if days_to_be_considered != "" and add_all_sheets == False:
+        if days_to_be_considered != "" and add_all_sheets == str(False):
           initial_date = datetime.strptime(days_to_be_considered.split("-")[0], '%Y/%m/%d')
           final_date = datetime.strptime(days_to_be_considered.split("-")[1], '%Y/%m/%d')
           dates_list = []
@@ -201,7 +201,7 @@ if submitted:
         for element in os.listdir("data/"):
           if element.endswith('.xlsx'):
                  
-            if add_all_sheets == False:
+            if add_all_sheets == str(False):
         # Normal scenario, only daily leads
               if days_to_be_considered == "":
                 try:
