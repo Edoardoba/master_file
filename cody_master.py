@@ -153,7 +153,7 @@ with form:
     
     submitted = st.form_submit_button(label="Submit")  
 
-    
+    st.write(starting_date)
 if submitted:
     if uploaded_file is not None:
         info_master = pd.read_excel(uploaded_file)
