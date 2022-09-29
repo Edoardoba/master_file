@@ -139,7 +139,7 @@ with form:
         datetime.datetime.today()) 
     ending_date = cols[1].date_input(
          "End Date",
-         datetime.date(2019, 7, 9))
+         datetime.datetime.today())
 
     bug_type = cols[0].selectbox(
         "Add All Sheets:", ["True", "False"], index=1
@@ -189,7 +189,7 @@ if submitted:
           for date in range(diff.days + 1):
               dates_list.append((initial_date + timedelta(date)).strftime('%Y/%m/%d'))
         else:
-          day = datetime.today()
+          day = datetime.datetime.today()
 
 
 
