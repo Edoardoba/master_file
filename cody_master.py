@@ -224,7 +224,7 @@ if submitted:
                 docs_to_ignore = []
                 for selected_date in dates_list:
                   if element not in docs_to_ignore:
-                    day = datetime.strptime(selected_date, '%Y/%m/%d')
+                    day = datetime.datetime.strptime(selected_date, '%Y/%m/%d')
                     sheet = get_sheet_name(element.replace(".xlsx", ""))
                     if sheet == ["None"]: docs_to_ignore.append(element)
                     try:
