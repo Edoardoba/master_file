@@ -149,6 +149,7 @@ with form:
 
     
 if submitted:
+    print("OKKKK")
     if uploaded_file is not None:
 #         try:
         info_master = pd.read_excel(uploaded_file)
