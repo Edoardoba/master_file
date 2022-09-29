@@ -2,6 +2,7 @@ import datetime
 import os
 import pickle
 import streamlit as st
+from datetime import timedelta
 from googleapiclient.discovery import build
 from google_auth_oauthlib.flow import InstalledAppFlow
 from google.auth.transport.requests import Request
@@ -191,8 +192,8 @@ if submitted:
             days_to_be_considered = str(starting_date) + "-" + str(ending_date) 
             
         if days_to_be_considered != "" and add_all_sheets == str(False):
-          initial_date = datetime.strptime(days_to_be_considered.split("-")[0], '%Y/%m/%d')
-          final_date = datetime.strptime(days_to_be_considered.split("-")[1], '%Y/%m/%d')
+          initial_date = datetime.datetime.strptime(days_to_be_considered.split("-")[0], '%Y/%m/%d')
+          final_date = datetime.datetime.strptime(days_to_be_considered.split("-")[1], '%Y/%m/%d')
           dates_list = []
           diff = final_date - initial_date
           for date in range(diff.days + 1):
