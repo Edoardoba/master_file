@@ -97,7 +97,7 @@ if submitted:
     if uploaded_file is not None:
 #         try:
         dataframe = pd.read_excel(uploaded_file)
-        st.table(dataframe)
+        st.table(dataframe.head(5))
 
         for col in info_master.columns.to_list():
           if "Unnamed" in col:
