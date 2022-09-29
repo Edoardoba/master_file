@@ -153,7 +153,6 @@ with form:
     
     submitted = st.form_submit_button(label="Submit")  
 
-    st.write(starting_date)
 if submitted:
     if uploaded_file is not None:
         info_master = pd.read_excel(uploaded_file)
@@ -223,15 +222,15 @@ if submitted:
         # Retrieve all leads from a Date Range
                 docs_to_ignore = []
                 for selected_date in dates_list:
-                  if element not in docs_to_ignore:
-                    day = datetime.datetime.strptime(selected_date, '%Y/%m/%d')
-                    sheet = get_sheet_name(element.replace(".xlsx", ""))
-                    if sheet == ["None"]: docs_to_ignore.append(element)
-                    try:
-                      data, sheetname = read_data(path + element, sheet)
-                      master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day.strftime('%d/%m/%Y')).reset_index(drop = True)           
-                    except:
-                      pass
+                  try:
+                      if element not in docs_to_ignore:
+                        day = datetime.datetime.strptime(selected_date, '%Y/%m/%d')
+                        sheet = get_sheet_name(element.replace(".xlsx", ""))
+                        if sheet == ["None"]: docs_to_ignore.append(element)             
+                          data, sheetname = read_data(path + element, sheet)
+                          master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day.strftime('%d/%m/%Y')).reset_index(drop = True)           
+                  except:
+                    pass
                   print("Done " + element + " " + selected_date)
         # Scan all sheets in the Excel Files
             else:
