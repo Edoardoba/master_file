@@ -12,6 +12,9 @@ from googleapiclient.http import MediaIoBaseDownload, MediaFileUpload
 import pandas as pd
 
 path = "data/"
+# Initialize Master File
+col_names =  ["Sheet Name", "Date", "ASIN", "ASIN URL", "Product Title", "Source", "Source URL", "Source Title", "Product Category","Buy Cost", "Sell Price", "Projected Net Profit", "ROI", "Promo Codes", "Cashback","Notes"]
+master_file  = pd.DataFrame(columns = col_names)
 
 def download_data(request, file, suffix):
     fh = io.BytesIO()
