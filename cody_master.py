@@ -107,9 +107,10 @@ if submitted:
         sheet_names = info_master["Sheet Name"].unique()
         sheet_names_short = [x.lstrip().rstrip() for x in sheet_names if str(x)!="nan"]
         
+        
         for file_name in sheet_names:
-            file = service.files().list( q =  "name = '" + file_name + "'", includeItemsFromAllDrives=True, supportsAllDrives=True).execute()
-            if len(file) != 0:
+            file = service.files().list( q =  "name = '" + file_name.replace("'","\\'").replace("\"","\\'") + "'", includeItemsFromAllDrives=True, supportsAllDrives=True).execute()
+            if len(file["files"]) != 0:
                 try:
                     request = service.files().export_media(fileId=file["files"][0]['id'], mimeType='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
                     download_data(request, file, ".xlsx")
