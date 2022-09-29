@@ -82,7 +82,7 @@ with form:
     starting_date = cols[0].date_input(
          "Initial Date",
 #          datetime.date(2022, 7, 6))
-        datetime.today()) 
+        datetime.datetime.today()) 
     ending_date = cols[1].date_input(
          "End Date",
          datetime.date(2019, 7, 9))
