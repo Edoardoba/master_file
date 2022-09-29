@@ -227,8 +227,8 @@ if submitted:
                         day = datetime.datetime.strptime(selected_date, '%Y/%m/%d')
                         sheet = get_sheet_name(element.replace(".xlsx", ""))
                         if sheet == ["None"]: docs_to_ignore.append(element)             
-                          data, sheetname = read_data(path + element, sheet)
-                          master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day.strftime('%d/%m/%Y')).reset_index(drop = True)           
+                        data, sheetname = read_data(path + element, sheet)
+                        master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day.strftime('%d/%m/%Y')).reset_index(drop = True)           
                   except:
                     pass
                   print("Done " + element + " " + selected_date)
