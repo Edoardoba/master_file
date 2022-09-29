@@ -176,7 +176,7 @@ if submitted:
 
                 
                 
-         info_master["Sheet Name"] = [str(x).replace("/","-").lstrip().rstrip() for x in info_master["Sheet Name"]]
+        info_master["Sheet Name"] = [str(x).replace("/","-").lstrip().rstrip() for x in info_master["Sheet Name"]]
 
         add_all_sheets == False
         days_to_be_considered == ""
