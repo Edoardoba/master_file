@@ -178,8 +178,8 @@ if submitted:
                 
         info_master["Sheet Name"] = [str(x).replace("/","-").lstrip().rstrip() for x in info_master["Sheet Name"]]
 
-        add_all_sheets == False
-        days_to_be_considered == ""
+        add_all_sheets = False
+        days_to_be_considered = ""
         
         
         for element in os.listdir("data/"):
