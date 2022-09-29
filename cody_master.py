@@ -172,7 +172,7 @@ with form:
     submitted = st.form_submit_button(label="Submit")  
 
 if submitted:
-    try:
+#     try:
         if uploaded_file is not None:
             info_master = pd.read_excel(uploaded_file)
             st.table(info_master.head(3))
@@ -267,5 +267,5 @@ if submitted:
             master_file = post_processing(master_file)          
             master_file = to_excel(master_file)        
             st.download_button("📥 Download Master File", master_file, file_name = 'master_file.xlsx')    
-    except:
-        st.write("Excel file not valid, please upload another one")
+#     except:
+#         st.write("Excel file not valid, please upload another one")
