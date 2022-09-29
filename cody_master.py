@@ -186,7 +186,10 @@ if submitted:
         add_all_sheets = bug_type
         days_to_be_considered = ""
         
-        if starting_date == datetime.datetime.today():
+        starting_date = starting_date.strftime('%Y/%m/%d')
+        ending_date = ending_date.strftime('%Y/%m/%d')
+        
+        if starting_date == datetime.datetime.today().strftime('%Y/%m/%d'):
             days_to_be_considered = ""
         else:
             days_to_be_considered = str(starting_date) + "-" + str(ending_date) 
