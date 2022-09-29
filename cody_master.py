@@ -60,7 +60,7 @@ def read_data(file, sheet):
       try:
         data = pd.read_excel(str(file), format)
       except:
-        pass
+        data = pd.read_excel(str(file))
   else:
     data = pd.read_excel(str(file))
 
