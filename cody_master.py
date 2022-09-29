@@ -98,44 +98,51 @@ if submitted:
 
         for element in os.listdir("data/"):
           if element.endswith('.xlsx'):
-                 
-            if add_all_sheets == str(False):
-        # Normal scenario, only daily leads
-              if days_to_be_considered == "":
-                try:
-                  sheet = get_sheet_name(element.replace(".xlsx", ""))
-                  data, sheetname = read_data(path + element, sheet)
-                  master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day.strftime('%d/%m/%Y')).reset_index(drop = True)
-                  print("Done " + element)
-                except Exception as e:
-                  print("File " + element + " not processed")
-              else:
-        # Retrieve all leads from a Date Range
-                docs_to_ignore = []
-                for selected_date in dates_list:
-                  try:
-                      if element not in docs_to_ignore:
-                        day = datetime.datetime.strptime(selected_date, '%Y/%m/%d')
-                        sheet = get_sheet_name(element.replace(".xlsx", ""))
-                        if sheet == ["None"]: docs_to_ignore.append(element)             
-                        data, sheetname = read_data(path + element, sheet)
-                        master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day.strftime('%d/%m/%Y')).reset_index(drop = True)           
-                  except:
-                    pass
-                  print("Done " + element + " " + selected_date)
-        # Scan all sheets in the Excel Files
-            else:
-              try:
-                for sheet in pd.ExcelFile("data/" + element).sheet_names:
-                  data, sheetname = read_data(path + element, [sheet])
-                  if len(pd.ExcelFile("data/" + element).sheet_names) > 1:
-                    master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, sheet).reset_index(drop = True)
-                  else:
-                    master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day).reset_index(drop = True)
+              sheet = get_sheet_name(element.replace(".xlsx", ""))
+              data, sheetname = read_data(path + element, sheet)
+              master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day.strftime('%d/%m/%Y')).reset_index(drop = True)
+              print("Done " + element)
+                
+                
+                
+                
+#             if add_all_sheets == str(False):
+#         # Normal scenario, only daily leads
+#               if days_to_be_considered == "":
+#                 try:
+#                   sheet = get_sheet_name(element.replace(".xlsx", ""))
+#                   data, sheetname = read_data(path + element, sheet)
+#                   master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day.strftime('%d/%m/%Y')).reset_index(drop = True)
+#                   print("Done " + element)
+#                 except Exception as e:
+#                   print("File " + element + " not processed")
+#               else:
+#         # Retrieve all leads from a Date Range
+#                 docs_to_ignore = []
+#                 for selected_date in dates_list:
+#                   try:
+#                       if element not in docs_to_ignore:
+#                         day = datetime.datetime.strptime(selected_date, '%Y/%m/%d')
+#                         sheet = get_sheet_name(element.replace(".xlsx", ""))
+#                         if sheet == ["None"]: docs_to_ignore.append(element)             
+#                         data, sheetname = read_data(path + element, sheet)
+#                         master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day.strftime('%d/%m/%Y')).reset_index(drop = True)           
+#                   except:
+#                     pass
+#                   print("Done " + element + " " + selected_date)
+#         # Scan all sheets in the Excel Files
+#             else:
+#               try:
+#                 for sheet in pd.ExcelFile("data/" + element).sheet_names:
+#                   data, sheetname = read_data(path + element, [sheet])
+#                   if len(pd.ExcelFile("data/" + element).sheet_names) > 1:
+#                     master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, sheet).reset_index(drop = True)
+#                   else:
+#                     master_file = build_master_file(master_file, data, element.replace(".xlsx", ""), sheetname, day).reset_index(drop = True)
 
-                  print("Done " + element + " " + sheet)
-              except:
-                pass
+#                   print("Done " + element + " " + sheet)
+#               except:
+#                 pass
 
         master_file = post_processing(master_file)          
         master_file = to_excel(master_file)        
